@@ -10,6 +10,8 @@ class ConversionTable
 	public $src_table = null;
 	public $dst_table = null;
 
+	public $clear_data = false;
+
 	private $deps = array();
 	private $fields = array();
 	private $id_field = null;
@@ -59,15 +61,27 @@ class ConversionTable
 
 	public function run()
 	{
-		$rs = $this->getSourceRecordset();
-		$this->clearDestinationTable();
+		if ($this->clear_data) {
+			$this->clearDestinationTable();
+			$rs = $this->getSourceRecordset();
+		} elseif ($this->id_field !== null) {
+			$max_id = $this->getDestinationMaxId();
+			$rs = $this->getSourceRecordset($max_id);
+		} else {
+			return 0;
+		}
+
+		$count = 0;		
 		$row = $this->getSourceRow($rs);
 
 		while ($row !== null) {
+			$count++;
 			$row = $this->convertRow($row);
 			$this->insertDestinationRow($row);
 			$row = $this->getSourceRow($rs);
 		}
+
+		return $count;
 	}
 
 	// }}}
@@ -85,7 +99,7 @@ class ConversionTable
 	// }}}
 
 	// source methods
-	// {{{ protected function getSourceRow($rs)
+	// {{{ protected function getSourceRow()
 
 	protected function getSourceRow($rs)
 	{
@@ -95,9 +109,15 @@ class ConversionTable
 	// }}}
 	// {{{ protected function getSourceRecordset()
 
-	protected function getSourceRecordset()
+	protected function getSourceRecordset($start_above = null)
 	{
 		$sql = $this->getSourceQuery();
+
+		if ($start_above !== null)
+			$sql.= sprintf(' and %s > %s',
+				$this->id_field->src_field->name,
+				$this->process->src_db->quote($start_above, $this->id_field->src_field->type));
+
 		$rs = SwatDB::query($this->process->src_db, $sql, null);
 		return $rs;
 	}
@@ -116,7 +136,7 @@ class ConversionTable
 				$select_list[] = $field->src_field->name;
 		}
 
-		$sql = sprintf('select %s from %s',
+		$sql = sprintf('select %s from %s where 1=1',
 			implode(', ', $select_list),
 			$this->src_table);
 
@@ -131,7 +151,7 @@ class ConversionTable
 		if ($this->id_field === null)
 			throw new SwatException('No ID field specified.');
 
-		if ($this->id_field->src_field->type === 'integer')
+		if ($this->id_field->src_field->type !== 'integer')
 			throw new SwatException('Unable to query max since source ID field is non-integer.');
 
 		$sql = sprintf('select max(%s) from %s',
@@ -217,7 +237,7 @@ class ConversionTable
 		if ($this->id_field === null)
 			throw new SwatException('No ID field specified.');
 
-		if ($this->id_field->dst_field->type === 'integer')
+		if ($this->id_field->dst_field->type !== 'integer')
 			throw new SwatException('Unable to query max since destination ID field is non-integer.');
 
 		$sql = sprintf('select max(%s) from %s',

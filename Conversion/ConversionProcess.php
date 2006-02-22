@@ -41,7 +41,7 @@ class ConversionProcess
 		if (PEAR::isError($this->src_db))
 			throw new SwatDBException($this->src_db);
 
-		echo "success.\n";
+		echo "success\n";
 	}
 
 	// }}}
@@ -59,7 +59,7 @@ class ConversionProcess
 		if (PEAR::isError($this->dst_db))
 			throw new SwatDBException($this->dst_db);
 
-		echo "success.\n";
+		echo "success\n";
 	}
 
 	// }}}
@@ -71,7 +71,7 @@ class ConversionProcess
 			$table->process = $this;
 			printf("Initializing table (%s)... ", get_class($table));
 			$table->init();
-			echo "success.\n";
+			echo "success\n";
 		}
 		
 		$this->connectSourceDB();
@@ -98,14 +98,18 @@ class ConversionProcess
 
 		foreach ($table->getDeps() as $dep) {
 			$dep_table = $this->lookupTableByDestinationTable($dep);
-			$this->convertTable($dep_table);
+
+			if ($dep_table === null)
+				printf("Warning: dependent table '$dep' not found, skipping\n");
+			else
+				$this->convertTable($dep_table);
 		}
 
 		array_pop($this->stack);
 
 		printf("Converting table (%s)... ", $table_name);
-		$table->run($this);
-		echo "success.\n";
+		$row_count = $table->run($this);
+		echo "$row_count rows inserted\n";
 
 		$this->processed_table_names[] = $table_name;
 	}
@@ -119,7 +123,7 @@ class ConversionProcess
 			if ($name == $table->dst_table)
 				return $table;
 
-		throw new SwatException("Conversion table with destination table '$name' not found.");
+		return null;
 	}
 
 	// }}}
