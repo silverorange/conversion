@@ -61,14 +61,12 @@ class ConversionTable
 
 	public function run()
 	{
-		if ($this->clear_data) {
+		if ($this->clear_data || $this->id_field === null) {
 			$this->clearDestinationTable();
 			$rs = $this->getSourceRecordset();
-		} elseif ($this->id_field !== null) {
+		} else {
 			$max_id = $this->getDestinationMaxId();
 			$rs = $this->getSourceRecordset($max_id);
-		} else {
-			return 0;
 		}
 
 		$count = 0;		
