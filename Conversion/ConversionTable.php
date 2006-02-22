@@ -69,6 +69,10 @@ class ConversionTable
 			$rs = $this->getSourceRecordset($max_id);
 		}
 
+		if ($this->id_field !== null &&
+			$this->id_field->dst_field->type === 'integer')
+				$this->setDestinationSequence();
+
 		$count = 0;		
 		$row = $this->getSourceRow($rs);
 
@@ -263,6 +267,21 @@ class ConversionTable
 	{
 		$sql = sprintf('delete from %s',
 			$this->dst_table);
+
+		SwatDB::exec($this->process->dst_db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function setDestinationSequence()
+
+	protected function setDestinationSequence()
+	{
+		if ($this->id_field === null)
+			throw new SwatException('No ID field specified.');
+
+		$sql = sprintf('select setval(\'%1$s_%2$s_seq\', max(%2$s), true) from %1$s',
+			$this->dst_table,
+			$this->id_field->dst_field->name);
 
 		SwatDB::exec($this->process->dst_db, $sql);
 	}
