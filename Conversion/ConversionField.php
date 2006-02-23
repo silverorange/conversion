@@ -45,7 +45,7 @@ class ConversionField
 	// }}}
 
 	// conversion methods
-	// {{{ protected function convertData()
+	// {{{ public function convertData()
 
 	public function convertData($data)
 	{
@@ -53,6 +53,13 @@ class ConversionField
 			return $this->value;
 
 		return $data;
+	}
+
+	// }}}
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
 	}
 
 	// }}}

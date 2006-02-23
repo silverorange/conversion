@@ -110,6 +110,7 @@ class ConversionProcess
 		printf("Converting table (%s)... ", $table_name);
 		$row_count = $table->run($this);
 		echo "$row_count rows inserted\n";
+		$table->check();
 
 		$this->processed_table_names[] = $table_name;
 	}

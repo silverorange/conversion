@@ -12,9 +12,11 @@ class ConversionTable
 
 	public $clear_data = false;
 
+	protected $fields = array();
+	protected $id_field = null;
+
 	private $deps = array();
-	private $fields = array();
-	private $id_field = null;
+	private $current_row;
 
 	// {{{ public function addField()
 
@@ -50,6 +52,14 @@ class ConversionTable
 	}
 
 	// }}}
+	// {{{ public function getCurrentRow()
+
+	public function &getCurrentRow()
+	{
+		return $this->current_row;
+	}
+
+	// }}}
 	// {{{ public function init()
 
 	public function init()
@@ -77,23 +87,20 @@ class ConversionTable
 		$row = $this->getSourceRow($rs);
 
 		while ($row !== null) {
+			$this->current_row = &$row;
 			$count++;
 			$row = $this->convertRow($row);
 			$this->insertDestinationRow($row);
 			$row = $this->getSourceRow($rs);
 		}
 
-		$src_count = $this->getSourceRecordCount();
-		$dst_count = $this->getDestinationRecordCount();
-		if ($dst_count !== $src_count)
-			printf('Warning: source table has %s rows and destination table has %s rows.\n',
-				$src_count, $dst_count);
+		$this->finalize();
 
 		return $count;
 	}
 
 	// }}}
-	// {{{ public function getFieldByDestinationName()
+	// {{{ public function getFieldIndexByDestinationName()
 
 	public function getFieldIndexByDestinationName($name)
 	{
@@ -102,6 +109,18 @@ class ConversionTable
 				return $index;
 
 		throw new SwatException("Conversion field with destination field name '$name' not found.");
+	}
+
+	// }}}
+	// {{{ public function check()
+
+	public function check()
+	{
+		$src_count = $this->getSourceRecordCount();
+		$dst_count = $this->getDestinationRecordCount();
+		if ($dst_count != $src_count)
+			printf("Warning: source table (%s) has %s rows and destination table (%s) has %s rows.\n",
+				$this->src_table, $src_count, $this->dst_table, $dst_count);
 	}
 
 	// }}}
@@ -119,7 +138,7 @@ class ConversionTable
 
 	protected function getSourceRecordset($start_above = null)
 	{
-		$sql = $this->getSourceQuery();
+		$sql = $this->getSourceSQL();
 
 		if ($start_above !== null)
 			$sql.= sprintf(' and %s > %s',
@@ -131,9 +150,9 @@ class ConversionTable
 	}
 
 	// }}}
-	// {{{ protected function getSourceQuery()
+	// {{{ protected function getSourceSQL()
 
-	protected function getSourceQuery()
+	protected function getSourceSQL()
 	{
 		$select_list = array();
 
@@ -198,13 +217,22 @@ class ConversionTable
 	}
 
 	// }}}
+	// {{{ protected function finalize()
+
+	protected function finalize()
+	{
+		foreach ($this->fields as $field)
+			$field->finalize();
+	}
+
+	// }}}
 	
 	// destination methods
 	// {{{ protected function insertDestinationRow()
 
 	protected function insertDestinationRow($row)
 	{
-		$sql = $this->getDestinationInsert();
+		$sql = $this->getDestinationSQL();
 		$i = 0;
 
 		foreach ($this->fields as $field) {
@@ -217,9 +245,9 @@ class ConversionTable
 	}
 
 	// }}}
-	// {{{ protected function getDesinationInsert()
+	// {{{ protected function getDestinationSQL()
 
-	protected function getDestinationInsert()
+	protected function getDestinationSQL()
 	{
 		$insert_list = array();
 		$value_list = array();
