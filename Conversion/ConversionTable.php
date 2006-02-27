@@ -71,8 +71,14 @@ class ConversionTable
 
 	public function run_pass1()
 	{
+		$table_name = get_class($this);
+		printf("Pass 1: Converting table (%s)... ", $table_name);
+		$count = 0;
+
 		if ($this->clear_data || $this->id_field === null)
-			$this->clearDestinationTable();
+			$count = $this->clearDestinationTable();
+
+		echo "$count rows deleted\n";
 	}
 
 	// }}}
@@ -80,8 +86,11 @@ class ConversionTable
 
 	public function run_pass2()
 	{
+		$table_name = get_class($this);
+		$msg = sprintf("Pass 2: Converting table (%s)... ", $table_name);
+		echo $msg;
+
 		if ($this->clear_data || $this->id_field === null) {
-			$this->clearDestinationTable();
 			$rs = $this->getSourceRecordset();
 		} else {
 			$max_id = $this->getDestinationMaxId();
@@ -96,6 +105,9 @@ class ConversionTable
 		$row = $this->getSourceRow($rs);
 
 		while ($row !== null) {
+			if ($count % 10 == 0)
+				echo "\r", $msg, "$count rows inserted";
+
 			$this->current_row = &$row;
 			$count++;
 			$row = $this->convertRow($row);
@@ -105,7 +117,8 @@ class ConversionTable
 
 		$this->finalize();
 
-		return $count;
+		echo "\r", $msg, "$count rows inserted\n";
+		return;
 	}
 
 	// }}}
@@ -311,7 +324,7 @@ class ConversionTable
 		$sql = sprintf('delete from %s',
 			$this->dst_table);
 
-		SwatDB::exec($this->process->dst_db, $sql);
+		return SwatDB::exec($this->process->dst_db, $sql);
 	}
 
 	// }}}

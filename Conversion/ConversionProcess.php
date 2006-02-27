@@ -94,7 +94,6 @@ class ConversionProcess
 		if (in_array($table_name, $this->stack))
 			throw new SwatException("Circular dependency on table '$table_name'.");
 
-		printf("Pass 1: Converting table (%s)... \n", $table_name);
 		$table->run_pass1($this);
 
 		array_push($this->stack, $table_name);
@@ -110,9 +109,7 @@ class ConversionProcess
 
 		array_pop($this->stack);
 
-		printf("Pass 2: Converting table (%s)... ", $table_name);
-		$row_count = $table->run_pass2($this);
-		echo "$row_count rows inserted\n";
+		$table->run_pass2($this);
 		$table->check();
 
 		$this->processed_table_names[] = $table_name;
