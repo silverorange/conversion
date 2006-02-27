@@ -67,9 +67,18 @@ class ConversionTable
 	}
 
 	// }}}
-	// {{{ public function run()
+	// {{{ public function run_pass1()
 
-	public function run()
+	public function run_pass1()
+	{
+		if ($this->clear_data || $this->id_field === null)
+			$this->clearDestinationTable();
+	}
+
+	// }}}
+	// {{{ public function run_pass2()
+
+	public function run_pass2()
 	{
 		if ($this->clear_data || $this->id_field === null) {
 			$this->clearDestinationTable();
