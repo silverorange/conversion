@@ -11,6 +11,7 @@ class ConversionTable
 	public $dst_table = null;
 
 	public $clear_data = false;
+	public $set_sequence = true;
 
 	protected $fields = array();
 	protected $id_field = null;
@@ -90,14 +91,15 @@ class ConversionTable
 		$msg = sprintf("Pass 2: Converting table (%s)... ", $table_name);
 		echo $msg;
 
-		if ($this->clear_data || $this->id_field === null) {
-			$rs = $this->getSourceRecordset();
-		} else {
+		if ($this->clear_data || $this->id_field === null)
+			$max_id = null;
+		else
 			$max_id = $this->getDestinationMaxId();
-			$rs = $this->getSourceRecordset($max_id);
-		}
 
-		if ($this->id_field !== null &&
+		$rs = $this->getSourceRecordset($max_id);
+
+		if ($this->set_sequence &&
+			$this->id_field !== null &&
 			$this->id_field->dst_field->type === 'integer')
 				$this->setDestinationSequence();
 
