@@ -98,11 +98,6 @@ class ConversionTable
 
 		$rs = $this->getSourceRecordset($max_id);
 
-		if ($this->set_sequence &&
-			$this->id_field !== null &&
-			$this->id_field->dst_field->type === 'integer')
-				$this->setDestinationSequence();
-
 		$count = 0;		
 		$row = $this->getSourceRow($rs);
 
@@ -116,6 +111,11 @@ class ConversionTable
 			$this->insertDestinationRow($row);
 			$row = $this->getSourceRow($rs);
 		}
+
+		if ($this->set_sequence &&
+			$this->id_field !== null &&
+			$this->id_field->dst_field->type === 'integer')
+				$this->setDestinationSequence();
 
 		$this->finalize();
 
