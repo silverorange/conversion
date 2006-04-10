@@ -140,6 +140,9 @@ class ConversionTable
 
 	public function check()
 	{
+		if ($this->src_table === null || $this->dst_table === null)
+			return;
+
 		$src_count = $this->getSourceRecordCount();
 		$dst_count = $this->getDestinationRecordCount();
 		if ($dst_count != $src_count)
