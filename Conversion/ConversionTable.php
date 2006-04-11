@@ -167,10 +167,14 @@ class ConversionTable
 	{
 		$sql = $this->getSourceSQL();
 
-		if ($start_above !== null)
-			$sql.= sprintf(' and %s > %s',
+		if ($start_above === null)
+			$sql.= sprintf(' order by %s',
+				$this->id_field->src_field->name);
+		else
+			$sql.= sprintf(' and %s > %s order by %s',
 				$this->id_field->src_field->name,
-				$this->process->src_db->quote($start_above, $this->id_field->src_field->type));
+				$this->process->src_db->quote($start_above, $this->id_field->src_field->type),
+				$this->id_field->src_field->name);
 
 		$rs = SwatDB::query($this->process->src_db, $sql, null);
 		return $rs;
