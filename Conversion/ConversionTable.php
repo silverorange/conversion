@@ -168,8 +168,9 @@ class ConversionTable
 		$sql = $this->getSourceSQL();
 
 		if ($start_above === null)
-			$sql.= sprintf(' order by %s',
-				$this->id_field->src_field->name);
+			if ($this->id_field !== null)
+				$sql.= sprintf(' order by %s',
+					$this->id_field->src_field->name);
 		else
 			$sql.= sprintf(' and %s > %s order by %s',
 				$this->id_field->src_field->name,
