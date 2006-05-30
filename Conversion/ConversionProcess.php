@@ -128,6 +128,24 @@ class ConversionProcess
 	}
 
 	// }}}
+	// {{{ public static function readline()
+
+	public static function readline($prompt = '')
+	{
+		echo $prompt;
+		$out = '';
+		$key = '';
+		$key = fgetc(STDIN);
+
+		while ($key != "\n") {
+			$out.= $key;
+			$key = fread(STDIN, 1);
+		}
+
+		return $out;
+	}
+
+	// }}}
 }
 
 ?>
