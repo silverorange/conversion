@@ -107,7 +107,7 @@ class ConversionTable
 
 			$this->current_row = &$row;
 			$count++;
-			$row = $this->convertRow($row);
+			$this->convertRow($row);
 			$this->insertDestinationRow($row);
 			$row = $this->getSourceRow($rs);
 		}
@@ -237,7 +237,7 @@ class ConversionTable
 	// conversion methods
 	// {{{ protected function convertRow()
 
-	protected function convertRow($row)
+	protected function convertRow(&$row)
 	{
 		$i = 0;
 
@@ -245,8 +245,6 @@ class ConversionTable
 			$row[$i] = $field->convertData($row[$i]);
 			$i++;
 		}
-
-		return $row;
 	}
 
 	// }}}
