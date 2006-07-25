@@ -12,6 +12,7 @@ class ConversionTable
 
 	public $clear_data = false;
 	public $set_sequence = true;
+	public $custom_where_clause = null;
 
 	protected $fields = array();
 	protected $id_field = null;
@@ -166,6 +167,9 @@ class ConversionTable
 	protected function getSourceRecordset($start_above = null)
 	{
 		$sql = $this->getSourceSQL();
+
+		if ($this->custom_where_clause !== null)
+			$sql.= ' and '.$this->custom_where_clause;
 
 		if ($this->id_field !== null) {
 			if ($start_above === null)
