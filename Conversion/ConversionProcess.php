@@ -41,6 +41,8 @@ class ConversionProcess
 		if (PEAR::isError($this->src_db))
 			throw new SwatDBException($this->src_db);
 
+		$this->src_db->options['result_buffering'] = false;
+
 		echo "success\n";
 	}
 
@@ -71,7 +73,7 @@ class ConversionProcess
 			$table->process = $this;
 			printf("Initializing table (%s)... ", get_class($table));
 			$table->init();
-			echo "success\n";
+			echo "Table initialization complete\n";
 		}
 		
 		$this->connectSourceDB();
