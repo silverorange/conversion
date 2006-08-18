@@ -68,5 +68,6 @@ class ConversionField
 
 require_once 'Conversion/ConversionTextField.php';
 require_once 'Conversion/ConversionBooleanField.php';
+require_once 'Conversion/ConversionDateField.php';
 
 ?>
