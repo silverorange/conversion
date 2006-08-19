@@ -5,8 +5,8 @@ require_once 'Swat/SwatDate.php';
 
 class ConversionDateField extends ConversionField
 {
-	public $src_timezone = 'America/Halifax';
-	public $dst_timezone = 'UTC';
+	public $src_tz_id = 'America/Halifax';
+	public $dst_tz_id = 'UTC';
 
 	// conversion methods
 	// {{{ protected function convertData()
@@ -16,8 +16,8 @@ class ConversionDateField extends ConversionField
 		$data = parent::convertData($data);
 
 		$date = new SwatDate($data);
-		$date->setTZbyID($this->src_timezone);
-		$date->convertTZbyID($this->dst_timezone);
+		$date->setTZbyID($this->src_tz_id);
+		$date->convertTZbyID($this->dst_tz_id);
 
 		$data = $date->getDate();
 
