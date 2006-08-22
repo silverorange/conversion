@@ -103,7 +103,7 @@ class ConversionProcess
 		if (in_array($table_name, $this->stack))
 			throw new SwatException("Circular dependency on table '$table_name'.");
 
-		$table->disableTriggers($this);
+		$table->disableTriggers();
 
 		$table->run_pass1($this);
 
@@ -123,7 +123,7 @@ class ConversionProcess
 		$table->run_pass2($this);
 		$table->check();
 
-		$table->enableTriggers($this);
+		$table->enableTriggers();
 
 		$this->processed_table_names[] = $table_name;
 	}
