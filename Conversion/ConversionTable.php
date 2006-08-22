@@ -29,6 +29,7 @@ class ConversionTable
 	private $current_row;
 
 	// }}}
+
 	// {{{ public function addField()
 
 	public function addField($field)
@@ -158,6 +159,26 @@ class ConversionTable
 		if ($dst_count != $src_count)
 			printf("Warning: source table (%s) has %s rows and destination table (%s) has %s rows.\n",
 				$this->src_table, $src_count, $this->dst_table, $dst_count);
+	}
+
+	// }}}
+	// {{{ public function disableTriggers()
+
+	public function disableTriggers()
+	{
+		$sql = sprintf('alter table %s disable trigger all', $this->dst_table);
+
+		SwatDB::query($this->process->dst_db, $sql);
+	}
+
+	// }}}
+	// {{{ public function enableTriggers()
+
+	public function enableTriggers()
+	{
+		$sql = sprintf('alter table %s enable trigger all', $this->dst_table);
+
+		SwatDB::query($this->process->dst_db, $sql);
 	}
 
 	// }}}
