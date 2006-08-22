@@ -4,6 +4,8 @@ require_once 'Conversion/ConversionField.php';
 
 class ConversionTable
 {
+	// {{{ public properties
+
 	// ref to parent ConversionProcess object
 	public $process;
 
@@ -14,12 +16,19 @@ class ConversionTable
 	public $set_sequence = true;
 	public $custom_where_clause = null;
 
+	// }}}
+	// {{{ protected properties
+
 	protected $fields = array();
 	protected $id_field = null;
+
+	// }}}
+	// {{{ private properties
 
 	private $deps = array();
 	private $current_row;
 
+	// }}}
 	// {{{ public function addField()
 
 	public function addField($field)
