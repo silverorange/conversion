@@ -9,15 +9,22 @@ require_once 'Conversion/ConversionTable.php';
 
 class ConversionProcess
 {
+	// {{{ public properties
+
 	public $src_dsn = null;
 	public $dst_dsn = null;
 
 	public $src_db = null;
 	public $dst_db = null;
 
+	// }}}
+	// {{{ private properties
+
 	private $tables = array();
 	private $processed_table_names = array();
 	private $stack = array();
+
+	// }}}
 
 	// {{{ public function addTable()
 
@@ -96,6 +103,8 @@ class ConversionProcess
 		if (in_array($table_name, $this->stack))
 			throw new SwatException("Circular dependency on table '$table_name'.");
 
+		$table->disableTriggers($this);
+
 		$table->run_pass1($this);
 
 		array_push($this->stack, $table_name);
@@ -113,6 +122,8 @@ class ConversionProcess
 
 		$table->run_pass2($this);
 		$table->check();
+
+		$table->enableTriggers($this);
 
 		$this->processed_table_names[] = $table_name;
 	}
