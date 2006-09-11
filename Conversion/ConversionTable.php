@@ -166,7 +166,7 @@ class ConversionTable
 
 	public function disableTriggers()
 	{
-		$sql = sprintf('alter table %s disable trigger all', $this->dst_table);
+		$sql = sprintf('alter table %s disable trigger user', $this->dst_table);
 
 		SwatDB::query($this->process->dst_db, $sql);
 	}
@@ -176,7 +176,7 @@ class ConversionTable
 
 	public function enableTriggers()
 	{
-		$sql = sprintf('alter table %s enable trigger all', $this->dst_table);
+		$sql = sprintf('alter table %s enable trigger user', $this->dst_table);
 
 		SwatDB::query($this->process->dst_db, $sql);
 	}
