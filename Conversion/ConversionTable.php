@@ -79,9 +79,9 @@ class ConversionTable
 	}
 
 	// }}}
-	// {{{ public function run_pass1()
+	// {{{ public function runPass1()
 
-	public function run_pass1()
+	public function runPass1()
 	{
 		$table_name = get_class($this);
 		printf("Pass 1: Converting table (%s)... ", $table_name);
@@ -94,9 +94,9 @@ class ConversionTable
 	}
 
 	// }}}
-	// {{{ public function run_pass2()
+	// {{{ public function runPass2()
 
-	public function run_pass2()
+	public function runPass2()
 	{
 		$table_name = get_class($this);
 		$msg = sprintf("Pass 2: Converting table (%s)... ", $table_name);

@@ -105,7 +105,7 @@ class ConversionProcess
 
 		$table->disableTriggers();
 
-		$table->run_pass1($this);
+		$table->runPass1($this);
 
 		array_push($this->stack, $table_name);
 
@@ -120,7 +120,7 @@ class ConversionProcess
 
 		array_pop($this->stack);
 
-		$table->run_pass2($this);
+		$table->runPass2($this);
 		$table->check();
 
 		$table->enableTriggers();
