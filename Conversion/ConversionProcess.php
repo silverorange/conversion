@@ -65,6 +65,10 @@ class ConversionProcess
 
 		$this->dst_db = MDB2::connect($this->dst_dsn);
 
+		$this->dst_db->options['portability'] =
+			$this->dst_db->options['portability'] ^
+				MDB2_PORTABILITY_EMPTY_TO_NULL;
+
 		if (PEAR::isError($this->dst_db))
 			throw new SwatDBException($this->dst_db);
 
