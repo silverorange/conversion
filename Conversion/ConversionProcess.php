@@ -40,8 +40,11 @@ class ConversionProcess
 	{
 		printf("Connecting to source DB (%s)... ", $this->src_dsn);
 
-		if ($this->src_dsn === null)
-			throw new SwatException('No source DSN specified.');
+		if ($this->src_dsn === null) {
+			$this->src_db = null;
+			echo "No source DSN\n";
+			return;
+		}
 
 		$this->src_db = MDB2::connect($this->src_dsn);
 
@@ -60,8 +63,11 @@ class ConversionProcess
 	{
 		printf("Connecting to destination DB (%s)... ", $this->dst_dsn);
 
-		if ($this->dst_dsn === null)
-			throw new SwatException('No destination DSN specified.');
+		if ($this->dst_dsn === null) {
+			$this->dst_db = null;
+			echo "No destination DSN\n";
+			return;
+		}
 
 		$this->dst_db = MDB2::connect($this->dst_dsn);
 

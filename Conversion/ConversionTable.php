@@ -107,20 +107,22 @@ class ConversionTable
 		else
 			$max_id = $this->getDestinationMaxId();
 
-		$rs = $this->getSourceRecordset($max_id);
-
 		$count = 0;		
-		$row = $this->getSourceRow($rs);
+		if ($this->src_table !== null) {
+			$rs = $this->getSourceRecordset($max_id);
 
-		while ($row !== null) {
-			if ($count % 100 == 0)
-				echo "\r", $msg, "$count rows inserted";
-
-			$this->current_row = &$row;
-			$count++;
-			$this->convertRow($row);
-			$this->insertDestinationRow($row);
 			$row = $this->getSourceRow($rs);
+
+			while ($row !== null) {
+				if ($count % 100 == 0)
+					echo "\r", $msg, "$count rows inserted";
+
+				$this->current_row = &$row;
+				$count++;
+				$this->convertRow($row);
+				$this->insertDestinationRow($row);
+				$row = $this->getSourceRow($rs);
+			}
 		}
 
 		if ($this->set_sequence &&
