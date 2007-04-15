@@ -7,6 +7,24 @@ require_once 'SwatDB/exceptions/SwatDBException.php';
 require_once 'Swat/exceptions/SwatException.php';
 require_once 'Conversion/ConversionTable.php';
 
+/**
+ * Runnable application that converts data from one database to another 
+ *
+ * The conversion process is composed of multiple {@link ConversionTable}
+ * objects.
+ *
+ * Features supported are:
+ * - change database software
+ * - change table names
+ * - change column names
+ * - change column types
+ * - change character encoding
+ * - change date time-zones
+ * - easily extensible for completely custom conversion behaviour
+ *
+ * @package   Conversion
+ * @copyright 2006 silverorange
+ */
 class ConversionProcess
 {
 	// {{{ public properties
@@ -25,7 +43,6 @@ class ConversionProcess
 	private $stack = array();
 
 	// }}}
-
 	// {{{ public function addTable()
 
 	public function addTable(ConversionTable $table)

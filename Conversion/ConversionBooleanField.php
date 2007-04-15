@@ -2,10 +2,19 @@
 
 require_once 'Conversion/ConversionField.php';
 
+/**
+ * Converts a column to a boolean column
+ *
+ * @package   Conversion
+ * @copyright 2006 silverorange
+ */
 class ConversionBooleanField extends ConversionField
 {
+	// {{{ public properties
+
 	public $inverse = false;
 
+	// }}}
 	// {{{ protected function getDefaultType()
 
 	protected function getDefaultType()
@@ -29,7 +38,6 @@ class ConversionBooleanField extends ConversionField
 	}
 
 	// }}}
-	
 }
 
 ?>

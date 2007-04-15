@@ -2,15 +2,31 @@
 
 require_once 'SwatDB/SwatDBField.php';
 
+/**
+ * Base class for converting a column in the source table to a column in the
+ * destination table
+ *
+ * Supports renaming columns and changing column types.
+ *
+ * @package   Conversion
+ * @copyright 2006 silverorange
+ */
 class ConversionField
 {
-	// ref to parent ConversionTable object
+	// {{{ public properties
+
+	/**
+	 * The parent {@link ConversionTable} object of this field
+	 *
+	 * @var ConversionTable
+	 */
 	public $table;
 
 	public $src_field = null;
 	public $dst_field = null;
 	public $value = null;
 
+	// }}}
 	// {{{ public function __construct()
 
 	public function __construct($field = null) {
@@ -63,7 +79,6 @@ class ConversionField
 	}
 
 	// }}}
-	
 }
 
 require_once 'Conversion/ConversionTextField.php';

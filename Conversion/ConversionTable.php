@@ -2,6 +2,14 @@
 
 require_once 'Conversion/ConversionField.php';
 
+/**
+ * Converts an existing table from one database table schema to another
+ *
+ * Conversion tables are composed of multiple {@link ConversionField} objects.
+ *
+ * @package   Conversion
+ * @copyright 2006 silverorange
+ */
 class ConversionTable
 {
 	// {{{ public properties

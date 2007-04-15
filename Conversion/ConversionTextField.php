@@ -2,11 +2,23 @@
 
 require_once 'Conversion/ConversionField.php';
 
+/**
+ * Converts a column to a text column
+ *
+ * Supports conversion of character encoding.
+ *
+ * @package   Conversion
+ * @copyright 2006 silverorange
+ */
 class ConversionTextField extends ConversionField
 {
+	// {{{ public properties
+
 	public $src_charset = 'ISO-8859-1';
 	public $dst_charset = 'UTF-8';
 	public $trim = false;
+
+	// }}}
 
 	// conversion methods
 	// {{{ protected function convertData()
@@ -23,7 +35,6 @@ class ConversionTextField extends ConversionField
 	}
 
 	// }}}
-	
 }
 
 ?>
