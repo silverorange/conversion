@@ -51,6 +51,43 @@ class ConversionProcess
 	}
 
 	// }}}
+	// {{{ public function run()
+
+	public function run()
+	{
+		foreach ($this->tables as $table) {
+			$table->process = $this;
+			printf("Initializing table (%s)... ", get_class($table));
+			$table->init();
+			echo "Table initialization complete\n";
+		}
+		
+		$this->connectSourceDB();
+		$this->connectDestinationDB();
+
+		foreach ($this->tables as $table)
+			$this->convertTable($table);
+	}
+
+	// }}}
+	// {{{ public static function readline()
+
+	public static function readline($prompt = '')
+	{
+		echo $prompt;
+		$out = '';
+		$key = '';
+		$key = fgetc(STDIN);
+
+		while ($key != "\n") {
+			$out.= $key;
+			$key = fread(STDIN, 1);
+		}
+
+		return $out;
+	}
+
+	// }}}
 	// {{{ protected function connectSourceDB()
 
 	protected function connectSourceDB()
@@ -96,25 +133,6 @@ class ConversionProcess
 			throw new SwatDBException($this->dst_db);
 
 		echo "success\n";
-	}
-
-	// }}}
-	// {{{ public function run()
-
-	public function run()
-	{
-		foreach ($this->tables as $table) {
-			$table->process = $this;
-			printf("Initializing table (%s)... ", get_class($table));
-			$table->init();
-			echo "Table initialization complete\n";
-		}
-		
-		$this->connectSourceDB();
-		$this->connectDestinationDB();
-
-		foreach ($this->tables as $table)
-			$this->convertTable($table);
 	}
 
 	// }}}
@@ -165,24 +183,6 @@ class ConversionProcess
 				return $table;
 
 		return null;
-	}
-
-	// }}}
-	// {{{ public static function readline()
-
-	public static function readline($prompt = '')
-	{
-		echo $prompt;
-		$out = '';
-		$key = '';
-		$key = fgetc(STDIN);
-
-		while ($key != "\n") {
-			$out.= $key;
-			$key = fread(STDIN, 1);
-		}
-
-		return $out;
 	}
 
 	// }}}
