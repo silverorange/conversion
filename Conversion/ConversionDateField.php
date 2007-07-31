@@ -15,6 +15,7 @@ class ConversionDateField extends ConversionField
 {
 	// {{{ public properties
 
+	public $convert_null_to_now = true;
 	public $src_tz_id = 'America/Halifax';
 	public $dst_tz_id = 'UTC';
 
@@ -26,6 +27,9 @@ class ConversionDateField extends ConversionField
 	public function convertData($data)
 	{
 		$data = parent::convertData($data);
+
+		if ($data === null && !$this->convert_null_to_now)
+			return null;
 
 		$date = new SwatDate($data);
 		$date->setTZbyID($this->src_tz_id);
