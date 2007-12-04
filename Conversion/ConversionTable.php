@@ -115,7 +115,7 @@ class ConversionTable
 		else
 			$max_id = $this->getDestinationMaxId();
 
-		$count = 0;		
+		$count = 0;
 		if ($this->src_table !== null) {
 			$rs = $this->getSourceRecordset($max_id);
 
@@ -301,7 +301,7 @@ class ConversionTable
 	}
 
 	// }}}
-	
+
 	// destination methods
 	// {{{ protected function insertDestinationRow()
 
