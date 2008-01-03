@@ -235,7 +235,7 @@ class ConversionTable
 
 		foreach ($this->fields as $field) {
 			if ($field->src_field === null)
-				$select_list[] = 'null';
+				$select_list[] = '0';
 			else
 				$select_list[] = $field->src_field->name;
 		}
