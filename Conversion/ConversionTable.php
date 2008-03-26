@@ -122,7 +122,7 @@ class ConversionTable
 			$row = $this->getSourceRow($rs);
 
 			while ($row !== null) {
-				if ($count % 100 == 0)
+				if ($count % 10 == 0)
 					echo "\r", $msg, "$count rows inserted";
 
 				$this->current_row = &$row;
