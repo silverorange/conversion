@@ -41,6 +41,7 @@ class ConversionProcess
 	private $tables = array();
 	private $processed_table_names = array();
 	private $stack = array();
+	private $queue = array();
 
 	// }}}
 	// {{{ public function addTable()
@@ -61,12 +62,25 @@ class ConversionProcess
 			$table->init();
 			echo "Table initialization complete\n";
 		}
-		
+
 		$this->connectSourceDB();
 		$this->connectDestinationDB();
 
 		foreach ($this->tables as $table)
-			$this->convertTable($table);
+			$this->queueTable($table);
+
+		foreach (array_reverse($this->queue) as $table) {
+			$table->disableTriggers();
+			$table->runPass1($this);
+			$table->enableTriggers();
+		}
+
+		foreach ($this->queue as $table) {
+			$table->disableTriggers();
+			$table->runPass2($this);
+			$table->check();
+			$table->enableTriggers();
+		}
 	}
 
 	// }}}
@@ -136,21 +150,17 @@ class ConversionProcess
 	}
 
 	// }}}
-	// {{{ private function convertTable()
+	// {{{ private function queueTable()
 
-	private function convertTable(ConversionTable $table)
+	private function queueTable(ConversionTable $table)
 	{
 		$table_name = get_class($table);
 
-		if (in_array($table_name, $this->processed_table_names))
+		if (in_array($table_name, $this->queue))
 			return;
 
 		if (in_array($table_name, $this->stack))
 			throw new SwatException("Circular dependency on table '$table_name'.");
-
-		$table->disableTriggers();
-
-		$table->runPass1($this);
 
 		array_push($this->stack, $table_name);
 
@@ -160,17 +170,12 @@ class ConversionProcess
 			if ($dep_table === null)
 				printf("Warning: dependent table '$dep' not found, skipping\n");
 			else
-				$this->convertTable($dep_table);
+				$this->queueTable($dep_table);
 		}
 
 		array_pop($this->stack);
 
-		$table->runPass2($this);
-		$table->check();
-
-		$table->enableTriggers();
-
-		$this->processed_table_names[] = $table_name;
+		$this->queue[] = $table;
 	}
 
 	// }}}
