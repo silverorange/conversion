@@ -39,7 +39,6 @@ class ConversionProcess
 	// {{{ private properties
 
 	private $tables = array();
-	private $processed_table_names = array();
 	private $stack = array();
 	private $queue = array();
 
@@ -156,7 +155,7 @@ class ConversionProcess
 	{
 		$table_name = get_class($table);
 
-		if (in_array($table_name, $this->queue))
+		if (in_array($table, $this->queue))
 			return;
 
 		if (in_array($table_name, $this->stack))
