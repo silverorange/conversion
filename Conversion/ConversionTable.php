@@ -29,6 +29,7 @@ class ConversionTable
 
 	protected $fields = array();
 	protected $id_field = null;
+	protected $dst_has_identity = true;
 
 	// }}}
 	// {{{ private properties
@@ -177,14 +178,22 @@ class ConversionTable
 	public function disableTriggers()
 	{
 		if ($this->process->dst_db->phptype == 'mssql') {
-			$sql = sprintf('disable trigger all on %s',
+			$sql = sprintf('alter table %s disable trigger all',
 				$this->dst_table);
+
+			SwatDB::exec($this->process->dst_db, $sql);
+			if ($this->dst_has_identity) {
+				$sql = sprintf('set IDENTITY_INSERT %s ON',
+					$this->dst_table);
+
+				SwatDB::exec($this->process->dst_db, $sql);
+			}
 		} else {
 			$sql = sprintf('alter table %s disable trigger user',
 				$this->dst_table);
-		}
 
-		SwatDB::query($this->process->dst_db, $sql);
+			SwatDB::exec($this->process->dst_db, $sql);
+		}
 	}
 
 	// }}}
@@ -193,14 +202,23 @@ class ConversionTable
 	public function enableTriggers()
 	{
 		if ($this->process->dst_db->phptype == 'mssql') {
-			$sql = sprintf('enable trigger all on %s',
+			$sql = sprintf('alter table %s enable trigger all',
 				$this->dst_table);
+
+			SwatDB::exec($this->process->dst_db, $sql);
+			if ($this->dst_has_identity) {
+				$sql = sprintf('set IDENTITY_INSERT %s OFF',
+					$this->dst_table);
+
+				SwatDB::exec($this->process->dst_db, $sql);
+			}
 		} else {
 			$sql = sprintf('alter table %s enable trigger user',
 				$this->dst_table);
+
+			SwatDB::exec($this->process->dst_db, $sql);
 		}
 
-		SwatDB::query($this->process->dst_db, $sql);
 	}
 
 	// }}}
@@ -400,11 +418,13 @@ class ConversionTable
 		if ($this->id_field === null)
 			throw new SwatException('No ID field specified.');
 
-		$sql = sprintf('select setval(\'%1$s_%2$s_seq\', max(%2$s), true) from %1$s',
-			$this->dst_table,
-			$this->id_field->dst_field->name);
+		if ($this->process->dst_db->phptype != 'mssql') {
+			$sql = sprintf('select setval(\'%1$s_%2$s_seq\', max(%2$s), true) from %1$s',
+				$this->dst_table,
+				$this->id_field->dst_field->name);
 
-		SwatDB::exec($this->process->dst_db, $sql);
+			SwatDB::exec($this->process->dst_db, $sql);
+		}
 	}
 
 	// }}}
