@@ -80,6 +80,13 @@ class ConversionProcess
 			$table->check();
 			$table->enableTriggers();
 		}
+
+		foreach ($this->queue as $table) {
+			$table->disableTriggers();
+			$table->runPass3($this);
+			$table->check();
+			$table->enableTriggers();
+		}
 	}
 
 	// }}}

@@ -25,6 +25,7 @@ class ConversionField
 	public $src_field = null;
 	public $dst_field = null;
 	public $value = null;
+	public $update_value = false;
 
 	// }}}
 	// {{{ public function __construct()
