@@ -165,8 +165,6 @@ class ConversionTable
 				$row = $this->getSourceRow($rs);
 			}
 		}
-
-		return;
 	}
 
 	// }}}
