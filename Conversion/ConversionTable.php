@@ -153,8 +153,10 @@ class ConversionTable
 		$table_name = get_class($this);
 
 		if ($this->src_table !== null && $this->id_field !== null) {
-			$msg = sprintf("Pass 3: Post-insert fields for (%s)... \n", $table_name);
-			echo $msg;
+			printf(
+				"Pass 3: Post-insert fields for (%s)... \n",
+				$table_name
+			);
 
 			$rs = $this->getSourceRecordset(null);
 			$row = $this->getSourceRow($rs);
