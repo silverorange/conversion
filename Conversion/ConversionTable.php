@@ -360,19 +360,21 @@ class ConversionTable
 	protected function insertDestinationRow($row)
 	{
 		$sql = $this->getDestinationSQL();
+
+		$values = array();
+
 		$i = 0;
-
-		$insert_rows = array();
-
 		foreach ($this->fields as $field) {
 			if (!$field->update_value) {
-				$row[$i] = $this->process->dst_db->quote($row[$i], $field->dst_field->type);
-				$insert_rows[] = $row[$i];
+				$values[] = $this->process->dst_db->quote(
+					$row[$i],
+					$field->dst_field->type
+				);
 			}
 			$i++;
 		}
 
-		$sql = vsprintf($sql, $insert_rows);
+		$sql = vsprintf($sql, $values);
 		SwatDB::exec($this->process->dst_db, $sql);
 	}
 
