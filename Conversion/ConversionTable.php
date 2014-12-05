@@ -153,8 +153,10 @@ class ConversionTable
 		$table_name = get_class($this);
 
 		if ($this->src_table !== null && $this->id_field !== null) {
-			$msg = sprintf("Pass 3: Post-insert fields for (%s)... \n", $table_name);
-			echo $msg;
+			printf(
+				"Pass 3: Post-insert fields for (%s)... \n",
+				$table_name
+			);
 
 			$rs = $this->getSourceRecordset(null);
 			$row = $this->getSourceRow($rs);
@@ -360,19 +362,21 @@ class ConversionTable
 	protected function insertDestinationRow($row)
 	{
 		$sql = $this->getDestinationSQL();
+
+		$values = array();
+
 		$i = 0;
-
-		$insert_rows = array();
-
 		foreach ($this->fields as $field) {
 			if (!$field->update_value) {
-				$row[$i] = $this->process->dst_db->quote($row[$i], $field->dst_field->type);
-				$insert_rows[] = $row[$i];
+				$values[] = $this->process->dst_db->quote(
+					$row[$i],
+					$field->dst_field->type
+				);
 			}
 			$i++;
 		}
 
-		$sql = vsprintf($sql, $insert_rows);
+		$sql = vsprintf($sql, $values);
 		SwatDB::exec($this->process->dst_db, $sql);
 	}
 
