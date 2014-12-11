@@ -27,7 +27,10 @@ class ConversionTextField extends ConversionField
 	public function convertData($data)
 	{
 		$data = parent::convertData($data);
-		$data = iconv($this->src_charset, $this->dst_charset, $data);
+
+		if ($data !== null) {
+			$data = iconv($this->src_charset, $this->dst_charset, $data);
+		}
 
 		if ($this->trim)
 			$data = trim($data);

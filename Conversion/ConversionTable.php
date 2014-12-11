@@ -146,6 +146,30 @@ class ConversionTable
 	}
 
 	// }}}
+	// {{{ public function runPass3()
+
+	public function runPass3()
+	{
+		$table_name = get_class($this);
+
+		if ($this->src_table !== null && $this->id_field !== null) {
+			printf(
+				"Pass 3: Post-insert fields for (%s)... \n",
+				$table_name
+			);
+
+			$rs = $this->getSourceRecordset(null);
+			$row = $this->getSourceRow($rs);
+
+			while ($row !== null) {
+				$this->current_row = &$row;
+				$this->updateDestinationRow($row);
+				$row = $this->getSourceRow($rs);
+			}
+		}
+	}
+
+	// }}}
 	// {{{ public function getFieldIndexByDestinationName()
 
 	public function getFieldIndexByDestinationName($name)
@@ -338,14 +362,21 @@ class ConversionTable
 	protected function insertDestinationRow($row)
 	{
 		$sql = $this->getDestinationSQL();
-		$i = 0;
 
+		$values = array();
+
+		$i = 0;
 		foreach ($this->fields as $field) {
-			$row[$i] = $this->process->dst_db->quote($row[$i], $field->dst_field->type);
+			if (!$field->update_value) {
+				$values[] = $this->process->dst_db->quote(
+					$row[$i],
+					$field->dst_field->type
+				);
+			}
 			$i++;
 		}
 
-		$sql = vsprintf($sql, $row);
+		$sql = vsprintf($sql, $values);
 		SwatDB::exec($this->process->dst_db, $sql);
 	}
 
@@ -358,8 +389,10 @@ class ConversionTable
 		$value_list = array();
 
 		foreach ($this->fields as $field) {
-			$insert_list[] = $field->dst_field->name;
-			$value_list[] = '%s';
+			if (!$field->update_value) {
+				$insert_list[] = $field->dst_field->name;
+				$value_list[] = '%s';
+			}
 		}
 
 		$sql = sprintf('insert into %s (%s) values (%s)',
@@ -423,6 +456,44 @@ class ConversionTable
 				$this->dst_table,
 				$this->id_field->dst_field->name);
 
+			SwatDB::exec($this->process->dst_db, $sql);
+		}
+	}
+
+	// }}}
+	// {{{ protected function updateDestinationRow()
+
+	protected function updateDestinationRow($row)
+	{
+		$i = 0;
+		$update_fields = array();
+		foreach ($this->fields as $field) {
+			if ($field->update_value) {
+				$update_fields[] = $field->dst_field->name.' = '.
+					$this->process->dst_db->quote(
+						$row[$i],
+						$field->dst_field->type
+					);
+			}
+			$i++;
+		}
+
+		$id = $row[
+			$this->getFieldIndexByDestinationName(
+				$this->id_field->src_field->name
+			)
+		];
+
+		if (count($update_fields) > 0) {
+			$sql = sprintf(
+				'update %s set %s where id = %s',
+				$this->dst_table,
+				implode(',', $update_fields),
+				$this->process->dst_db->quote(
+					$id,
+					$this->id_field->dst_field->type
+				)
+			);
 			SwatDB::exec($this->process->dst_db, $sql);
 		}
 	}
