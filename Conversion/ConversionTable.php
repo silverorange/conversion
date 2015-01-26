@@ -288,15 +288,18 @@ class ConversionTable
 		$select_list = array();
 
 		foreach ($this->fields as $field) {
-			if ($field->src_field === null)
+			if ($field->src_field === null) {
 				$select_list[] = '0';
-			else
+			} else {
 				$select_list[] = $field->src_field->name;
+			}
 		}
 
-		$sql = sprintf('select %s from %s where 1=1',
+		$sql = sprintf(
+			'select %s from %s where 1=1',
 			implode(', ', $select_list),
-			$this->src_table);
+			$this->src_table
+		);
 
 		return $sql;
 	}
@@ -306,15 +309,25 @@ class ConversionTable
 
 	protected function getSourceMaxId()
 	{
-		if ($this->id_field === null)
+		if ($this->id_field === null) {
 			throw new SwatException('No ID field specified.');
+		}
 
-		if ($this->id_field->src_field->type !== 'integer')
-			throw new SwatException('Unable to query max since source ID field is non-integer.');
+		if ($this->id_field->src_field->type !== 'integer') {
+			throw new SwatException(
+				'Unable to query max since source ID field is non-integer.'
+			);
+		}
 
-		$sql = sprintf('select max(%s) from %s',
+		$sql = sprintf(
+			'select max(%s) from %s',
 			$this->id_field->src_field->name,
-			$this->src_table);
+			$this->src_table
+		);
+
+		if ($this->custom_where_clause !== null) {
+			$sql.= ' where '.$this->custom_where_clause;
+		}
 
 		return SwatDB::queryOne($this->process->src_db, $sql);
 	}
@@ -324,8 +337,14 @@ class ConversionTable
 
 	protected function getSourceRecordCount()
 	{
-		$sql = sprintf('select count(*) from %s',
-			$this->src_table);
+		$sql = sprintf(
+			'select count(1) from %s',
+			$this->src_table
+		);
+
+		if ($this->custom_where_clause !== null) {
+			$sql.= ' where '.$this->custom_where_clause;
+		}
 
 		return SwatDB::queryOne($this->process->src_db, $sql);
 	}
