@@ -153,18 +153,29 @@ class ConversionTable
 		$table_name = get_class($this);
 
 		if ($this->src_table !== null && $this->id_field !== null) {
-			printf(
-				"Pass 3: Post-insert fields for (%s)... \n",
-				$table_name
-			);
 
-			$rs = $this->getSourceRecordset(null);
-			$row = $this->getSourceRow($rs);
+			$update = false;
+			foreach ($this->fields as $field) {
+				if ($field->update_value) {
+					$update = true;
+					break;
+				}
+			}
 
-			while ($row !== null) {
-				$this->current_row = &$row;
-				$this->updateDestinationRow($row);
+			if ($update) {
+				printf(
+					"Pass 3: Post-insert fields for (%s)... \n",
+					$table_name
+				);
+
+				$rs = $this->getSourceRecordset(null);
 				$row = $this->getSourceRow($rs);
+
+				while ($row !== null) {
+					$this->current_row = &$row;
+					$this->updateDestinationRow($row);
+					$row = $this->getSourceRow($rs);
+				}
 			}
 		}
 	}
