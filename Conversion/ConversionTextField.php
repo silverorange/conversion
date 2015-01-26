@@ -8,7 +8,7 @@ require_once 'Conversion/ConversionField.php';
  * Supports conversion of character encoding.
  *
  * @package   Conversion
- * @copyright 2006 silverorange
+ * @copyright 2006-2015 silverorange
  */
 class ConversionTextField extends ConversionField
 {
@@ -18,6 +18,7 @@ class ConversionTextField extends ConversionField
 	public $dst_charset = 'UTF-8';
 	public $trim = false;
 	public $empty_to_null = false;
+	public $null_to_empty = false;
 
 	// }}}
 
@@ -32,11 +33,17 @@ class ConversionTextField extends ConversionField
 			$data = iconv($this->src_charset, $this->dst_charset, $data);
 		}
 
-		if ($this->trim)
+		if ($this->trim) {
 			$data = trim($data);
+		}
 
-		if ($this->empty_to_null)
-			$data = (strlen($data) > 0) ? $data : null;
+		if ($this->empty_to_null) {
+			$data = ($data == '') ? null : $data;
+		}
+
+		if ($this->null_to_empty) {
+			$data = ($data === null) ? '' : $data;
+		}
 
 		return $data;
 	}
