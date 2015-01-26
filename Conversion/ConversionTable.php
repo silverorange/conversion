@@ -324,12 +324,6 @@ class ConversionTable
 			throw new SwatException('No ID field specified.');
 		}
 
-		if ($this->id_field->src_field->type !== 'integer') {
-			throw new SwatException(
-				'Unable to query max since source ID field is non-integer.'
-			);
-		}
-
 		$sql = sprintf(
 			'select max(%s) from %s',
 			$this->id_field->src_field->name,
@@ -438,15 +432,15 @@ class ConversionTable
 
 	protected function getDestinationMaxId()
 	{
-		if ($this->id_field === null)
+		if ($this->id_field === null) {
 			throw new SwatException('No ID field specified.');
+		}
 
-		if ($this->id_field->dst_field->type !== 'integer')
-			throw new SwatException('Unable to query max since destination ID field is non-integer.');
-
-		$sql = sprintf('select max(%s) from %s',
+		$sql = sprintf(
+			'select max(%s) from %s',
 			$this->id_field->dst_field->name,
-			$this->dst_table);
+			$this->dst_table
+		);
 
 		return SwatDB::queryOne($this->process->dst_db, $sql);
 	}
