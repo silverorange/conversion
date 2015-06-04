@@ -277,14 +277,18 @@ class ConversionTable
 			$sql.= ' and '.$this->custom_where_clause;
 
 		if ($this->id_field !== null) {
+			$src_field_name = $this->src_table.'.'.
+				$this->id_field->src_field->name;
+
 			if ($start_above === null)
-				$sql.= sprintf(' order by %s',
-				$this->id_field->src_field->name);
+				$sql.= sprintf(' order by %s', $src_field_name);
 			else
-				$sql.= sprintf(' and %s > %s order by %s',
-					$this->id_field->src_field->name,
+				$sql.= sprintf(
+					' and %s > %s order by %s',
+					$src_field_name,
 					$this->process->src_db->quote($start_above, $this->id_field->src_field->type),
-					$this->id_field->src_field->name);
+					$src_field_name
+				);
 		}
 
 		$rs = SwatDB::query($this->process->src_db, $sql, null);
