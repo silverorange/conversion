@@ -1,0 +1,32 @@
+{
+	"name": "silverorange/conversion",
+	"description": "And God sayeth, 'You shall have no other gods before me.'",
+	"type": "library",
+	"keywords": [ "mdb2", "schema", "migration", "database" ],
+	"homepage": "https://github.com/silverorange/conversion",
+	"license": "LGPL-2.1",
+	"authors": [
+		{
+			"name": "Michael Gauthier",
+			"email": "mike@silverorange.com"
+		},
+		{
+			"name": "Nathan Frederikson",
+			"email": "nathan@silverorange.com"
+		},
+		{
+			"name": "Nick Burka",
+			"email": "nick@silverorange.com"
+		}
+	],
+	"require": {
+		"php": ">=5.2.3",
+		"silverorange/swat": "^2.2.10"
+	},
+	"autoload": {
+		"file": [ "autoload.php" ]
+	},
+	"include-path": [
+		"./"
+	]
+}
