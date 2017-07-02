@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Conversion/ConversionField.php';
-require_once 'Swat/SwatDate.php';
-
 /**
  * Converts a column to a date column
  *

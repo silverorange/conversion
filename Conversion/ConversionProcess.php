@@ -1,12 +1,5 @@
 <?php
 
-require_once 'PEAR.php';
-require_once 'MDB2.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/exceptions/SwatDBException.php';
-require_once 'Swat/exceptions/SwatException.php';
-require_once 'Conversion/ConversionTable.php';
-
 /**
  * Runnable application that converts data from one database to another 
  *
