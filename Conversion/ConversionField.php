@@ -30,7 +30,8 @@ class ConversionField
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct($field = null) {
+	public function __construct($field = null)
+	{
 		$this->src_field = $field;
 	}
 
