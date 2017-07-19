@@ -33,7 +33,7 @@ class ConversionBooleanField extends ConversionField
 
 		if ($this->inverse)
 			$data = !$data;
-		
+
 		return $data;
 	}
 

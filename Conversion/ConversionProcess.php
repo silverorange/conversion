@@ -8,7 +8,7 @@ require_once 'Swat/exceptions/SwatException.php';
 require_once 'Conversion/ConversionTable.php';
 
 /**
- * Runnable application that converts data from one database to another 
+ * Runnable application that converts data from one database to another
  *
  * The conversion process is composed of multiple {@link ConversionTable}
  * objects.
@@ -47,7 +47,7 @@ class ConversionProcess
 
 	public function addTable(ConversionTable $table)
 	{
-		$this->tables[] = $table;		
+		$this->tables[] = $table;
 	}
 
 	// }}}

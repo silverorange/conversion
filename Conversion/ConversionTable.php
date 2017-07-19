@@ -203,8 +203,13 @@ class ConversionTable
 		$src_count = $this->getSourceRecordCount();
 		$dst_count = $this->getDestinationRecordCount();
 		if ($dst_count != $src_count)
-			printf("Warning: source table (%s) has %s rows and destination table (%s) has %s rows.\n",
-				$this->src_table, $src_count, $this->dst_table, $dst_count);
+			printf(
+				"Warning: source table (%s) has %s rows and destination table (%s) has %s rows.\n",
+				$this->src_table,
+				$src_count,
+				$this->dst_table,
+				$dst_count
+			);
 	}
 
 	// }}}
