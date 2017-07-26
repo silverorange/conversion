@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Conversion/ConversionField.php';
-
 /**
  * Converts a column to a text column
  *

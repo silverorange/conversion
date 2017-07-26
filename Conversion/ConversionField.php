@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBField.php';
-
 /**
  * Base class for converting a column in the source table to a column in the
  * destination table
@@ -82,9 +80,5 @@ class ConversionField
 
 	// }}}
 }
-
-require_once 'Conversion/ConversionTextField.php';
-require_once 'Conversion/ConversionBooleanField.php';
-require_once 'Conversion/ConversionDateField.php';
 
 ?>

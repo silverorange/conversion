@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Conversion/ConversionField.php';
-
 /**
  * Converts an existing table from one database table schema to another
  *
