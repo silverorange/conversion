@@ -109,10 +109,11 @@ class ConversionTable
 		$msg = sprintf("Pass 2: Converting table (%s)... ", $table_name);
 		echo $msg;
 
-		if ($this->clear_data || $this->id_field === null)
+		if ($this->clear_data || $this->id_field === null) {
 			$max_id = null;
-		else
+		} else {
 			$max_id = $this->getDestinationMaxId();
+		}
 
 		$count = 0;
 		if ($this->src_table !== null) {
@@ -121,8 +122,9 @@ class ConversionTable
 			$row = $this->getSourceRow($rs);
 
 			while ($row !== null) {
-				if ($count % 10 == 0)
+				if ($count % 10 == 0) {
 					echo "\r", $msg, "$count rows inserted";
+				}
 
 				$this->current_row = &$row;
 				$count++;
@@ -134,8 +136,10 @@ class ConversionTable
 
 		if ($this->set_sequence &&
 			$this->id_field !== null &&
-			$this->id_field->dst_field->type === 'integer')
-				$this->setDestinationSequence();
+			$this->id_field->dst_field->type === 'integer'
+		) {
+			$this->setDestinationSequence();
+		}
 
 		$this->finalize();
 
